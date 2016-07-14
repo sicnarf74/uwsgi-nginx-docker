@@ -1,8 +1,6 @@
-FROM python:2.7
+FROM python:2.7.12-slim
 
-MAINTAINER Sebastian Ramirez <tiangolo@gmail.com>
-# Install uWSGI
-RUN pip install uwsgi
+MAINTAINER Francis Arigo <francis.arigo@gmail.com>
 
 # Standard set up Nginx
 ENV NGINX_VERSION 1.9.11-1~jessie
@@ -25,9 +23,15 @@ RUN rm /etc/nginx/conf.d/default.conf
 # Copy the modified Nginx conf
 COPY nginx.conf /etc/nginx/conf.d/
 
-# Install Supervisord
-RUN apt-get update && apt-get install -y supervisor \
-&& rm -rf /var/lib/apt/lists/*
+# Install Supervisord and gcc
+RUN apt-get update && apt-get install -y supervisor gcc\
+        && rm -rf /var/lib/apt/lists/*
+
+# Install uWSGI
+RUN pip install uwsgi
+
+
+
 # Custom Supervisord config
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
